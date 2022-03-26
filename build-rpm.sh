@@ -78,6 +78,7 @@ if [ ! -z "$SOURCE_RPM" ]; then
           echo "$MOCK_BIN $DEFINE_CMD -r $MOCK_CONFIG --rebuild $MOUNT_POINT/$SOURCE_RPM --resultdir=$OUTPUT_FOLDER" > $OUTPUT_FOLDER/script-test.sh
         fi
 elif [ ! -z "$SPEC_FILE" ]; then
+        
         if [ -z "$SOURCES" ]; then
                 echo "WARNING: The SOURCES env variable pointing to folder or sources file was not specified. $SPEC_FILE will need to profied it's own Source."
         fi
@@ -86,8 +87,12 @@ elif [ ! -z "$SPEC_FILE" ]; then
         echo "      OUTPUT_FOLDER: $OUTPUT_FOLDER"
         echo "      MOCK_DEFINES:  ${MOCK_DEFINES[@]}"
         echo "========================================================================"
-
-        BUILD_COMMAND="$MOCK_BIN $DEFINE_CMD -r $MOCK_CONFIG --buildsrpm --spec=$MOUNT_POINT/$SPEC_FILE --resultdir=$OUTPUT_FOLDER"
+        mkdir tmpdir
+        cd tmpdir
+        cp $MOUNT_POINT/$SPEC_FILE  .
+        spectool -g *.spec
+        cd ..
+        BUILD_COMMAND="$MOCK_BIN $DEFINE_CMD -r $MOCK_CONFIG --buildsrpm --spec=tmpdir/$SPEC_FILE --resultdir=$OUTPUT_FOLDER"
         REBUILD_COMMAND="$MOCK_BIN $DEFINE_CMD -r $MOCK_CONFIG --rebuild \$(find $OUTPUT_FOLDER -type f -name \"*.src.rpm\") --resultdir=$OUTPUT_FOLDER"
 
         if [ ! -z "$SOURCES" ]; then
