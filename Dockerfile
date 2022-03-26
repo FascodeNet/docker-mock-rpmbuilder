@@ -6,7 +6,6 @@ LABEL "com.github.actions.icon"="pocket"
 LABEL "com.github.actions.color"="green"
 
 RUN dnf -y --setopt="tsflags=nodocs" update && \
-	dnf -y --setopt="tsflags=nodocs" install epel-release && \
 	dnf -y --setopt="tsflags=nodocs" install mock rpm-sign fedpkg rpmdevtools expect && \
 	dnf clean all && \
 	rm -rf /var/cache/dnf/
